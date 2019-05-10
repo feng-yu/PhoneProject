@@ -41,7 +41,7 @@ public class PhoneNumberStoreNGImp implements PhoneNumberStoreNG {
 		} else {
 			if (currentIndex != phoneList.size() - 1) {
 				for (int i = currentIndex + 1; i < phoneList.size(); i++) {
-					if (phoneList.get(i) == preferNumber) {
+					if (phoneList.get(i).equals(preferNumber)) {
 						inUse = true;
 					}
 				}
