@@ -1,7 +1,7 @@
 package com.learning.java.imp;
 
 import java.util.ArrayList;
-
+import javafx.util.Pair;
 import com.learning.java.api.PhoneNumberStoreNG;
 
 public class PhoneNumberStoreNGImp implements PhoneNumberStoreNG {
@@ -16,29 +16,14 @@ public class PhoneNumberStoreNGImp implements PhoneNumberStoreNG {
 
 	public Long getPhoneNumber() {
 		Long phoneNumber = null;
-		Long nextPhoneNumber = null;
+		Pair<Integer, Long> phonePair = null;
 
 		if (phoneList.size() == 0) {
 			phoneNumber = new Long(1111);
-		} else if (currentIndex == phoneList.size() - 1) { // last element in
-															// the list
-			phoneNumber = phoneList.get(currentIndex) + 1;
-			currentIndex++;
-		} else {
-			phoneNumber = phoneList.get(currentIndex);
-			do {
-				currentIndex++;
-				if (currentIndex != phoneList.size()) {
-					if (nextPhoneNumber != null)
-						phoneNumber = nextPhoneNumber;
-					nextPhoneNumber = phoneList.get(currentIndex);
-				} else {
-					phoneNumber = nextPhoneNumber;
-					break;
-				}
-			} while (nextPhoneNumber.equals(phoneNumber + 1));
-
-			phoneNumber = phoneNumber + 1;
+		} else{
+			phonePair = findAvailablePhone();
+			currentIndex = phonePair.getKey().intValue();
+			phoneNumber = phonePair.getValue();
 		}
 		phoneList.add(currentIndex, phoneNumber);
 		return phoneNumber;
@@ -120,5 +105,36 @@ public class PhoneNumberStoreNGImp implements PhoneNumberStoreNG {
 
 	public ArrayList<Long> getPhoneList() {
 		return phoneList;
+	}
+
+	private Pair<Integer, Long> findAvailablePhone() {
+		Pair<Integer, Long> phonePair = null;
+		Long phoneNumber = null;
+		Long nextPhoneNumber = null;
+		int cIndex = 0;
+		
+		cIndex = currentIndex;
+		phoneNumber = phoneList.get(cIndex);
+		
+		if (cIndex == phoneList.size() - 1) { // last element in the list
+			phoneNumber = phoneNumber + 1;
+			cIndex ++;
+		} else {
+			do {
+				cIndex++;
+				if (cIndex != phoneList.size()) {
+					if (nextPhoneNumber != null)
+						phoneNumber = nextPhoneNumber;
+					nextPhoneNumber = phoneList.get(cIndex);
+				} else {
+					phoneNumber = nextPhoneNumber;
+					break;
+				}
+			} while (nextPhoneNumber.equals(phoneNumber + 1));
+
+			phoneNumber = phoneNumber + 1;
+		}
+		phonePair = new Pair<Integer, Long>(new Integer(cIndex), new Long(phoneNumber));
+		return phonePair;
 	}
 }
