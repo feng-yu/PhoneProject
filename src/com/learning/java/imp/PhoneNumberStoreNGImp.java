@@ -34,6 +34,7 @@ public class PhoneNumberStoreNGImp implements PhoneNumberStoreNG {
 		Long nextPhoneNumber;
 		int nextIndex;
 		boolean inUse = false;
+		Pair<Integer, Long> phonePair = null;
 
 		if (preferNumber <= phoneNumber) {
 			inUse = true;
@@ -49,20 +50,9 @@ public class PhoneNumberStoreNGImp implements PhoneNumberStoreNG {
 
 		if (inUse) {
 			if (acceptChange) {
-				if (currentIndex != phoneList.size() - 1) {
-					nextIndex = currentIndex + 1;
-					nextPhoneNumber = phoneList.get(nextIndex);
-					while (nextPhoneNumber == phoneNumber + 1) {
-						nextIndex++;
-						phoneNumber = nextPhoneNumber;
-						nextPhoneNumber = phoneList.get(nextIndex);
-					}
-					currentIndex = nextIndex;
-					phoneNumber = phoneNumber + 1;
-				} else {
-					currentIndex++;
-					phoneNumber = phoneNumber + 1;
-				}
+				phonePair = findAvailablePhone();
+				currentIndex = phonePair.getKey().intValue();
+				phoneNumber = phonePair.getValue();
 				phoneList.add(currentIndex, phoneNumber);
 			} else {
 				phoneNumber = new Long(0);
@@ -75,13 +65,16 @@ public class PhoneNumberStoreNGImp implements PhoneNumberStoreNG {
 					nextIndex++;
 					nextPhoneNumber = phoneList.get(nextIndex);
 				}
-				phoneNumber = preferNumber;
-				phoneList.add(nextIndex, phoneNumber);
+				
+				phoneList.add(nextIndex, preferNumber);
 			} else {
-				currentIndex++;
-				phoneNumber = preferNumber;
-				phoneList.add(currentIndex, phoneNumber);
+				if (phoneNumber == preferNumber - 1){
+					phoneList.add(currentIndex++, preferNumber);
+				}else {
+					phoneList.add(currentIndex + 1, preferNumber);				
+				}
 			}
+			phoneNumber = preferNumber;
 		}
 
 		return phoneNumber;
